@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submission #<%= entry.id %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Thanks, <%= entry.name %>!</h1>
+  <p>This is your unique submission page: <code>/submissions/<%= entry.id %></code></p>
+
+  <ul>
+    <li><strong>ID:</strong> <%= entry.id %></li>
+    <li><strong>Name:</strong> <%= entry.name %></li>
+    <li><strong>Email:</strong> <%= entry.email %></li>
+    <li><strong>Department:</strong> <%= entry.department %></li>
+    <li><strong>Phone:</strong> <%= entry.phone %></li>
+  </ul>
+
+  <a href="/">Submit another response</a> |
+  <a href="/submissions">View all submissions</a>
+</body>
+</html>

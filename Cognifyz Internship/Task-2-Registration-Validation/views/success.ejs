@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Successful</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    h1 { color: #2e7d32; font-size: 22px; }
+    p { color: #444; font-size: 14px; margin: 6px 0; }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #2f6feb;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>✅ Registration Successful</h1>
+    <p><strong>Name:</strong> <%= record.name %></p>
+    <p><strong>Email:</strong> <%= record.email %></p>
+    <p><strong>Age:</strong> <%= record.age %></p>
+    <p><strong>Contact Number:</strong> <%= record.phone %></p>
+    <p><strong>Submitted at:</strong> <%= record.submittedAt %></p>
+    <a href="/">← Back to form</a>
+    &nbsp;|&nbsp;
+    <a href="/submissions">View all submissions →</a>
+  </div>
+</body>
+</html>

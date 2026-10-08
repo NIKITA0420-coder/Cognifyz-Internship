@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Submissions</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>All Submissions</h1>
+
+  <ul>
+    <% submissions.forEach(function(sub) { %>
+      <li>
+        <a href="/submissions/<%= sub.id %>">
+          #<%= sub.id %> — <%= sub.name %> (<%= sub.department %>)
+        </a>
+      </li>
+    <% }); %>
+  </ul>
+
+  <a href="/">Back to form</a>
+</body>
+</html>

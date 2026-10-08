@@ -1,0 +1,76 @@
+
+This document lists everything (languages, tools, frameworks, and services) used to build, run, and deploy this project, mapped to each step of the assignment.
+
+## 1. Languages used
+
+| Language | Where it's used | Purpose |
+|---|---|---|
+| JavaScript (Node.js runtime) | `server.js` | Back-end logic, API routes, data handling |
+| JavaScript (browser runtime) | `public/index.html` (`<script>`) | Front-end logic, calling the API, updating the page |
+| HTML | `public/index.html` | Page structure / UI elements |
+| CSS | `public/index.html` (`<style>`) | Styling and layout |
+| JSON | Used as the data format everywhere | Request bodies, API responses, `package.json` |
+
+## 2. Runtime and package manager
+
+| Tool | Version used | Purpose |
+|---|---|---|
+| **Node.js** | v18+ recommended | JavaScript runtime that runs `server.js` outside the browser |
+| **npm** (Node Package Manager) | bundled with Node.js | Installs and manages dependencies listed in `package.json` |
+
+## 3. Back-end dependencies (installed via `npm install`)
+
+| Package | Version | Purpose |
+|---|---|---|
+| **express** | ^4.19.2 | Web framework used to create the server, define REST routes, and serve static files |
+| **cors** | ^2.8.5 | Middleware that allows the front-end to make requests to the API without being blocked by browser security restrictions |
+
+These are declared in `package.json` and locked to exact versions in `package-lock.json`.
+
+## 4. Front-end technologies (no extra installs required)
+
+| Technology | Purpose |
+|---|---|
+| **Fetch API** (`fetch()`) | Built into all modern browsers; used to send GET/POST/PUT/DELETE requests to the API |
+| **DOM APIs** (`document.createElement`, `addEventListener`, etc.) | Used to dynamically build and update the task list on the page without a refresh |
+| Vanilla JavaScript | No front-end framework (React, Vue, etc.) was used — plain JS was enough for this project's scope |
+
+## 5. Development and deployment tools
+
+| Tool | Purpose |
+|---|---|
+| **Git** | Version control; tracks changes to the project |
+| **GitHub** | Hosts the project's source code online; connected repo triggers deployments |
+| **Render** | Cloud hosting platform; runs `npm install` then `npm start` to serve the app live at a public URL |
+
+## 6. How each requirement/tool maps to the assignment steps
+
+**Step 1 — Create RESTful API endpoints for CRUD operations**
+- Built with: **Express** (`server.js`)
+- `GET /api/tasks`, `GET /api/tasks/:id`, `POST /api/tasks`, `PUT /api/tasks/:id`, `DELETE /api/tasks/:id`
+
+**Step 2 — Develop a front-end interface that interacts with your own server API**
+- Built with: **HTML, CSS, vanilla JavaScript**, served as static files by Express (`express.static`)
+
+**Step 3 — Fetch and display data from your API on the front end**
+- Built with: the **Fetch API** (`fetch()`) and **DOM manipulation** in `public/index.html`, calling the endpoints defined in Step 1
+
+## 7. Data storage
+
+| Approach | Notes |
+|---|---|
+| In-memory JavaScript array (`let tasks = [...]` in `server.js`) | No external database was used. Data resets whenever the server restarts. This keeps the project focused on the API/front-end integration itself rather than database setup. |
+
+## 8. Summary list (quick reference)
+
+- Node.js
+- npm
+- Express
+- cors
+- JavaScript (ES6+)
+- HTML5
+- CSS3
+- Fetch API
+- Git
+- GitHub
+- Render (hosting)

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stored Submissions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 40px 20px;
+    }
+    .wrap {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 { font-size: 20px; margin-bottom: 16px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+    }
+    th { background: #f0f2f5; }
+    a {
+      display: inline-block;
+      margin-top: 16px;
+      color: #2f6feb;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .empty { color: #777; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Stored Submissions (temporary, in-memory)</h1>
+
+    <% if (submissions.length === 0) { %>
+      <p class="empty">No submissions yet.</p>
+    <% } else { %>
+      <table>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Age</th>
+          <th>Contact Number</th>
+          <th>Submitted At</th>
+        </tr>
+        <% submissions.forEach(function(s) { %>
+          <tr>
+            <td><%= s.id %></td>
+            <td><%= s.name %></td>
+            <td><%= s.email %></td>
+            <td><%= s.age %></td>
+            <td><%= s.phone %></td>
+            <td><%= s.submittedAt %></td>
+          </tr>
+        <% }); %>
+      </table>
+    <% } %>
+
+    <a href="/">← Back to form</a>
+  </div>
+</body>
+</html>

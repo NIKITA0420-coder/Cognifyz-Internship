@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Task Manager — API Demo</title>
+<style>
+  :root {
+    --bg: #f7ddf2;
+    --card: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --border: #e5e7eb;
+    --done-bg: #ecfdf5;
+    --done-text: #059669;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+  .app {
+    width: 100%;
+    max-width: 560px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  form {
+    display: flex;
+    gap: 8px;
+  }
+  input[type="text"] {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+  input[type="text"]:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    padding: 6px 10px;
+  }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    padding: 6px 10px;
+  }
+  .btn-secondary:hover { background: var(--border); }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  li:last-child { border-bottom: none; }
+  .task-title {
+    flex: 1;
+    font-size: 0.95rem;
+  }
+  .task-title.completed {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--done-bg);
+    color: var(--done-text);
+    font-weight: 600;
+  }
+  .status {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 8px;
+    min-height: 18px;
+  }
+  .status.error { color: var(--danger); }
+  .empty {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 20px 0;
+  }
+  code {
+    background: #f0f0f5;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <h1>📋 Task Manager</h1>
+    <p class="subtitle">
+      Front-end talking to a RESTful API at <code>/api/tasks</code> (GET, POST, PUT, DELETE).
+    </p>
+
+    <div class="card">
+      <form id="task-form">
+        <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off" required />
+        <button type="submit" class="btn-primary">Add</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <ul id="task-list"></ul>
+      <div id="empty-state" class="empty" style="display:none;">No tasks yet — add one above.</div>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    const API_URL = "/api/tasks";
+
+    const form = document.getElementById("task-form");
+    const input = document.getElementById("task-input");
+    const list = document.getElementById("task-list");
+    const emptyState = document.getElementById("empty-state");
+    const statusEl = document.getElementById("status");
+
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.classList.toggle("error", isError);
+      if (message) {
+        setTimeout(() => { statusEl.textContent = ""; }, 3000);
+      }
+    }
+
+    // ---- READ: fetch and display tasks ------------------------------------
+    async function loadTasks() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const tasks = await res.json();
+        renderTasks(tasks);
+      } catch (err) {
+        setStatus(`Failed to load tasks: ${err.message}`, true);
+      }
+    }
+
+    function renderTasks(tasks) {
+      list.innerHTML = "";
+      emptyState.style.display = tasks.length === 0 ? "block" : "none";
+
+      tasks.forEach((task) => {
+        const li = document.createElement("li");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", () => toggleComplete(task.id, checkbox.checked));
+
+        const title = document.createElement("span");
+        title.textContent = task.title;
+        title.className = "task-title" + (task.completed ? " completed" : "");
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.className = "btn-secondary";
+        editBtn.addEventListener("click", () => editTask(task));
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "btn-danger";
+        deleteBtn.addEventListener("click", () => deleteTask(task.id));
+
+        li.append(checkbox, title, editBtn, deleteBtn);
+        list.appendChild(li);
+      });
+    }
+
+    // ---- CREATE ------------------------------------------------------------
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = input.value.trim();
+      if (!title) return;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || `Server responded ${res.status}`);
+        }
+        input.value = "";
+        setStatus("Task added.");
+        await loadTasks();
+      } catch (err) {
+        setStatus(`Failed to add task: ${err.message}`, true);
+      }
+    });
+
+    // ---- UPDATE (toggle completed) ------------------------------------------
+    async function toggleComplete(id, completed) {
+      try {
+        const res = await fetch(`${API_URL}/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed }),
+        });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        setStatus("Task updated.");
+        await loadTasks();
+      } catch (err) {
+        setStatus(`Failed to update task: ${err.message}`, true);
+      }
+    }
+
+    // ---- UPDATE (edit title) -------------------------------------------------
+    async function editTask(task) {
+      const newTitle = prompt("Edit task:", task.title);
+      if (newTitle === null || !newTitle.trim() || newTitle.trim() === task.title) return;
+
+      try {
+        const res = await fetch(`${API_URL}/${task.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: newTitle.trim() }),
+        });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        setStatus("Task renamed.");
+        await loadTasks();
+      } catch (err) {
+        setStatus(`Failed to rename task: ${err.message}`, true);
+      }
+    }
+
+    // ---- DELETE --------------------------------------------------------------
+    async function deleteTask(id) {
+      if (!confirm("Delete this task?")) return;
+      try {
+        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        setStatus("Task deleted.");
+        await loadTasks();
+      } catch (err) {
+        setStatus(`Failed to delete task: ${err.message}`, true);
+      }
+    }
+
+    // Initial load
+    loadTasks();
+  </script>
+</body>
+</html>
