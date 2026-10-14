@@ -15,7 +15,6 @@ I have successfully completed my **Full Stack Development Internship** at **Cogn
 
 ## Internship Completion Certificate
 
-![Internship Completion Certificate](images/internship-certificate.jpeg)
 
 📄 [Download the certificate (PDF)](Nikita_T.pdf)
 
